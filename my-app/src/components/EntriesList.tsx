@@ -74,38 +74,27 @@ export default function EntriesList() {
     })
   }
 
-  const getEntryTypeColor = (type: string) => {
-    return type === "FREEWRITE" 
-      ? "bg-blue-100 text-blue-800" 
-      : "bg-green-100 text-green-800"
-  }
-
-  const getVisibilityColor = (visibility: string) => {
-    switch (visibility) {
-      case "PUBLIC":
-        return "bg-green-100 text-green-800"
-      case "PROTECTED":
-        return "bg-yellow-100 text-yellow-800"
-      default:
-        return "bg-gray-100 text-gray-800"
-    }
-  }
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      <div className="flex justify-center items-center py-12">
+        <div className="glass-strong rounded-3xl px-8 py-6">
+          <div className="flex items-center space-x-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-4 border-[#4A90E2] border-t-transparent"></div>
+            <div className="text-[#1a4d3e] font-medium">Loading entries...</div>
+          </div>
+        </div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-md p-4">
-        <p className="text-red-800">{error}</p>
+      <div className="glass-strong rounded-3xl p-6 border-2 border-red-200/50">
+        <p className="text-red-700 font-medium mb-4">{error}</p>
         <button
           onClick={fetchEntries}
-          className="mt-2 text-red-600 hover:text-red-800 underline"
+          className="btn-glossy rounded-2xl px-4 py-2 text-sm text-white"
         >
           Try again
         </button>
@@ -115,46 +104,58 @@ export default function EntriesList() {
 
   if (entries.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-gray-400 text-6xl mb-4">📝</div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No entries yet</h3>
-        <p className="text-gray-500 mb-4">Start your digital diary journey by creating your first entry.</p>
-        <Link
-          href="/entries/create/freewrite"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-        >
-          Create Your First Entry
-        </Link>
+      <div className="text-center py-16">
+        <div className="panel-soft p-12 max-w-md mx-auto">
+          <div className="text-7xl mb-6">📝</div>
+          <h3 className="text-2xl font-bold text-[#1a4d3e] mb-3">No entries yet</h3>
+          <p className="text-[#1a4d3e]/70 mb-6">Start your digital diary journey by creating your first entry.</p>
+          <Link
+            href="/entries/create/freewrite"
+            className="btn-glossy inline-flex items-center rounded-2xl px-6 py-3 text-sm font-medium text-white"
+          >
+             Create Your First Entry
+          </Link>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {entries.map((entry) => (
-        <div key={entry.id} className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-          <Link href={`/entries/${entry.id}`} className="block p-6 hover:bg-gray-50 transition-colors">
-            <div className="flex items-center space-x-2 mb-2">
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getEntryTypeColor(entry.type)}`}>
+        <div key={entry.id} className="panel-soft hover:scale-[1.02] transition-all duration-300 droplet">
+          <Link href={`/entries/${entry.id}`} className="block p-6">
+            <div className="flex items-center space-x-3 mb-3">
+              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                entry.type === "FREEWRITE" 
+                  ? "bg-gradient-to-r from-[#4A90E2] to-[#5BA3F5] text-white shadow-lg" 
+                  : "bg-gradient-to-r from-[#52C9A2] to-[#63D4B3] text-white shadow-lg"
+              }`}>
                 {entry.type === "FREEWRITE" ? "Freewrite" : "Guided"}
               </span>
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getVisibilityColor(entry.visibility)}`}>
+              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                entry.visibility === "PUBLIC"
+                  ? "bg-gradient-to-r from-[#52C9A2] to-[#63D4B3] text-white"
+                  : entry.visibility === "PROTECTED"
+                  ? "bg-gradient-to-r from-[#FFD93D] to-[#FFE66D] text-[#1a4d3e]"
+                  : "glass text-[#1a4d3e]"
+              }`}>
                 {entry.visibility.toLowerCase()}
               </span>
               {entry.qualityEmoji && (
-                <span className="text-lg">{entry.qualityEmoji}</span>
+                <span className="text-2xl">{entry.qualityEmoji}</span>
               )}
             </div>
             
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-xl font-bold text-[#1a4d3e] mb-3">
               Entry from {formatDate(entry.createdAt)}
             </h3>
             
-            <p className="text-gray-600 text-sm mb-3 line-clamp-3">
+            <p className="text-[#1a4d3e]/80 text-sm mb-4 line-clamp-3">
               {entry.content || "No content"}
             </p>
             
-            <div className="flex items-center text-xs text-gray-500">
+            <div className="flex items-center text-xs text-[#1a4d3e]/60">
               <span>Created: {formatDate(entry.createdAt)}</span>
               {entry.updatedAt !== entry.createdAt && (
                 <>
@@ -166,10 +167,10 @@ export default function EntriesList() {
           </Link>
           
           {/* Action buttons - positioned outside the clickable area */}
-          <div className="px-6 pb-4 flex items-center justify-end space-x-2">
+          <div className="px-6 pb-6 flex items-center justify-end space-x-3">
             <Link
               href={`/entries/${entry.id}/edit`}
-              className="text-gray-600 hover:text-gray-800 text-sm font-medium"
+              className="glass rounded-xl px-4 py-2 text-[#1a4d3e] hover:bg-white/40 transition-all text-sm font-medium"
             >
               Edit
             </Link>
@@ -178,7 +179,7 @@ export default function EntriesList() {
                 e.preventDefault()
                 deleteEntry(entry.id)
               }}
-              className="text-red-600 hover:text-red-800 text-sm font-medium"
+              className="glass rounded-xl px-4 py-2 text-red-600 hover:bg-red-50/40 transition-all text-sm font-medium"
             >
               Delete
             </button>

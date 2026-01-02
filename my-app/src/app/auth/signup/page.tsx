@@ -77,26 +77,27 @@ export default function SignUp() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative z-10">
       <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <div className="panel-soft p-8 text-center">
+          <div className="text-6xl mb-4">🌟</div>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-[#1a4d3e] to-[#4A90E2] bg-clip-text text-transparent">
             Create your account
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-3 text-sm text-[#1a4d3e]/70">
             Or{" "}
             <Link
               href="/auth/signin"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              className="font-semibold text-[#4A90E2] hover:text-[#5BA3F5] transition-colors"
             >
               sign in to your existing account
             </Link>
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="panel-soft p-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-[#1a4d3e] mb-2">
                 Email address
               </label>
               <input
@@ -105,14 +106,14 @@ export default function SignUp() {
                 type="email"
                 autoComplete="email"
                 required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="glass w-full px-4 py-3 rounded-2xl border border-white/30 placeholder-[#1a4d3e]/50 text-[#1a4d3e] focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-[#4A90E2] sm:text-sm transition-all"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="username" className="block text-sm font-medium text-[#1a4d3e] mb-2">
                 Username
               </label>
               <input
@@ -121,14 +122,14 @@ export default function SignUp() {
                 type="text"
                 autoComplete="username"
                 required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="glass w-full px-4 py-3 rounded-2xl border border-white/30 placeholder-[#1a4d3e]/50 text-[#1a4d3e] focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-[#4A90E2] sm:text-sm transition-all"
                 placeholder="Choose a unique username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-[#1a4d3e] mb-2">
                 Password
               </label>
               <input
@@ -137,14 +138,14 @@ export default function SignUp() {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="glass w-full px-4 py-3 rounded-2xl border border-white/30 placeholder-[#1a4d3e]/50 text-[#1a4d3e] focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-[#4A90E2] sm:text-sm transition-all"
                 placeholder="Create a password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#1a4d3e] mb-2">
                 Confirm Password
               </label>
               <input
@@ -153,7 +154,7 @@ export default function SignUp() {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="glass w-full px-4 py-3 rounded-2xl border border-white/30 placeholder-[#1a4d3e]/50 text-[#1a4d3e] focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:border-[#4A90E2] sm:text-sm transition-all"
                 placeholder="Confirm your password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -162,18 +163,22 @@ export default function SignUp() {
           </div>
 
           {error && (
-            <div className="text-red-600 text-sm text-center">{error}</div>
+            <div className="glass rounded-2xl p-4 border-2 border-red-200/50">
+              <p className="text-red-700 text-sm text-center font-medium">{error}</p>
+            </div>
           )}
 
           {success && (
-            <div className="text-green-600 text-sm text-center">{success}</div>
+            <div className="glass rounded-2xl p-4 border-2 border-green-200/50">
+              <p className="text-green-700 text-sm text-center font-medium">{success}</p>
+            </div>
           )}
 
           <div>
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-glossy w-full flex justify-center py-3 px-4 text-sm font-medium rounded-2xl text-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Creating account..." : "Create account"}
             </button>

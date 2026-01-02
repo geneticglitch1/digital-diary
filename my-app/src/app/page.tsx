@@ -5,39 +5,45 @@ import Link from "next/link"
 import EntriesList from "@/components/EntriesList"
 import CreateEntryDropdown from "@/components/CreateEntryDropdown"
 import ProfileDropdown from "@/components/ProfileDropdown"
+import CalendarEvents from "@/components/CalendarEvents"
 
 export default function Home() {
   const { data: session, status } = useSession()
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center relative z-10">
+        <div className="glass-strong rounded-3xl px-8 py-6">
+          <div className="flex items-center space-x-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-4 border-[#4A90E2] border-t-transparent"></div>
+            <div className="text-lg font-medium text-[#1a4d3e]">Loading...</div>
+          </div>
+        </div>
       </div>
     )
   }
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <nav className="bg-white shadow">
+      <div className="min-h-screen relative z-10">
+        <nav className="glass-strong sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
+            <div className="flex justify-between h-20">
               <div className="flex items-center">
-                <h1 className="text-xl font-semibold text-gray-900">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-[#1a4d3e] to-[#4A90E2] bg-clip-text text-transparent">
                   Digital Diary
                 </h1>
               </div>
               <div className="flex items-center space-x-4">
                 <Link
                   href="/auth/signin"
-                  className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                  className="glass rounded-2xl px-5 py-2.5 text-[#1a4d3e] hover:bg-white/40 transition-all font-medium text-sm"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/auth/signup"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  className="btn-glossy rounded-2xl px-5 py-2.5 text-white font-medium text-sm"
                 >
                   Sign Up
                 </Link>
@@ -46,26 +52,27 @@ export default function Home() {
           </div>
         </nav>
 
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <main className="max-w-4xl mx-auto py-12 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
-            <div className="border-4 border-dashed border-gray-200 rounded-lg p-8 text-center">
-              <div className="space-y-4">
-                <h2 className="text-2xl font-bold text-gray-900">
+            <div className="panel-soft p-12 text-center droplet">
+              <div className="space-y-6">
+                <div className="text-7xl mb-4">📔</div>
+                <h2 className="text-4xl font-bold bg-gradient-to-r from-[#1a4d3e] to-[#4A90E2] bg-clip-text text-transparent">
                   Welcome to Digital Diary
                 </h2>
-                <p className="text-gray-600">
-                  Please sign in to access your personal diary and start documenting your thoughts.
+                <p className="text-lg text-[#1a4d3e]/80 max-w-md mx-auto">
+                  Capture your thoughts, experiences, and reflections in a beautiful digital space inspired by nature.
                 </p>
-                <div className="mt-6 flex justify-center space-x-4">
+                <div className="mt-8 flex justify-center space-x-4">
                   <Link
                     href="/auth/signin"
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md text-sm font-medium"
+                    className="btn-glossy rounded-2xl px-8 py-3 text-white font-medium"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/auth/signup"
-                    className="bg-white hover:bg-gray-50 text-gray-900 px-6 py-3 rounded-md text-sm font-medium border border-gray-300"
+                    className="glass rounded-2xl px-8 py-3 text-[#1a4d3e] hover:bg-white/40 transition-all font-medium border-2 border-white/50"
                   >
                     Create Account
                   </Link>
@@ -79,13 +86,13 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow">
+    <div className="min-h-screen relative z-10">
+      <nav className="glass-strong sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between h-20">
             <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">
-                Digital Diary
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-[#1a4d3e] to-[#4A90E2] bg-clip-text text-transparent">
+               Digital Diary
               </h1>
             </div>
             <div className="flex items-center space-x-4">
@@ -95,23 +102,32 @@ export default function Home() {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          {/* Header with create button */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">Your Journal Entries</h2>
-                <p className="mt-1 text-sm text-gray-500">
-                  Document your thoughts, experiences, and reflections
-                </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* Left Column - Journal Entries */}
+            <div>
+              <div className="mb-6">
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div>
+                    <h2 className="text-3xl font-bold bg-gradient-to-r from-[#1a4d3e] to-[#4A90E2] bg-clip-text text-transparent">
+                      Your Journal Entries
+                    </h2>
+                    <p className="mt-2 text-sm text-[#1a4d3e]/70">
+                      Document your thoughts, experiences, and reflections
+                    </p>
+                  </div>
+                  <CreateEntryDropdown />
+                </div>
               </div>
-              <CreateEntryDropdown />
+              <EntriesList />
+            </div>
+
+            {/* Right Column - Calendar Events */}
+            <div>
+              <CalendarEvents />
             </div>
           </div>
-
-          {/* Entries List */}
-          <EntriesList />
         </div>
       </main>
     </div>

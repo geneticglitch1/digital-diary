@@ -35,10 +35,10 @@ export default function ProfileDropdown() {
       <div>
         <button
           type="button"
-          className="flex items-center space-x-2 rounded-full p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          className="glass flex items-center space-x-2 rounded-2xl p-2 hover:bg-white/40 focus:outline-none transition-all"
           onClick={() => setIsOpen(!isOpen)}
         >
-          <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-semibold overflow-hidden">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#4A90E2] to-[#52C9A2] flex items-center justify-center text-white text-sm font-semibold overflow-hidden shadow-lg">
             {session?.user?.profilePicture ? (
               <img
                 src={session.user.profilePicture}
@@ -55,11 +55,11 @@ export default function ProfileDropdown() {
               {getInitials()}
             </span>
           </div>
-          <span className="text-gray-700 text-sm font-medium hidden sm:block">
+          <span className="text-[#1a4d3e] text-sm font-medium hidden sm:block">
             {getDisplayName()}
           </span>
           <svg
-            className={`-mr-1 ml-1 h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            className={`ml-1 h-4 w-4 text-[#1a4d3e] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -82,12 +82,12 @@ export default function ProfileDropdown() {
           />
           
           {/* Dropdown menu */}
-          <div className="absolute right-0 z-20 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <div className="py-1">
+          <div className="absolute right-0 z-20 mt-3 w-64 origin-top-right glass-strong rounded-3xl shadow-2xl overflow-hidden">
+            <div className="py-2">
               {/* Profile Info */}
-              <div className="px-4 py-3 border-b border-gray-200">
+              <div className="px-5 py-4 border-b border-white/20">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white text-sm font-semibold overflow-hidden">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#4A90E2] to-[#52C9A2] flex items-center justify-center text-white text-sm font-semibold overflow-hidden shadow-lg">
                     {session?.user?.profilePicture ? (
                       <img
                         src={session.user.profilePicture}
@@ -105,8 +105,8 @@ export default function ProfileDropdown() {
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{getDisplayName()}</p>
-                    <p className="text-xs text-gray-500">{session?.user?.email}</p>
+                    <p className="text-sm font-semibold text-[#1a4d3e]">{getDisplayName()}</p>
+                    <p className="text-xs text-[#1a4d3e]/60">{session?.user?.email}</p>
                   </div>
                 </div>
               </div>
@@ -114,10 +114,10 @@ export default function ProfileDropdown() {
               {/* Menu Items */}
               <Link
                 href="/profile/edit"
-                className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                className="flex items-center px-5 py-3 text-sm text-[#1a4d3e] hover:bg-white/30 transition-all"
                 onClick={() => setIsOpen(false)}
               >
-                <svg className="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-3 text-[#4A90E2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
                 Edit Profile
@@ -125,24 +125,24 @@ export default function ProfileDropdown() {
 
               <Link
                 href="/"
-                className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                className="flex items-center px-5 py-3 text-sm text-[#1a4d3e] hover:bg-white/30 transition-all"
                 onClick={() => setIsOpen(false)}
               >
-                <svg className="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-3 text-[#52C9A2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
                 </svg>
                 My Entries
               </Link>
 
-              <div className="border-t border-gray-200">
+              <div className="border-t border-white/20 mt-1">
                 <button
                   onClick={() => {
                     setIsOpen(false)
                     signOut()
                   }}
-                  className="flex items-center w-full px-4 py-3 text-sm text-red-700 hover:bg-red-50 hover:text-red-900 transition-colors"
+                  className="flex items-center w-full px-5 py-3 text-sm text-red-600 hover:bg-red-50/30 transition-all"
                 >
-                  <svg className="w-4 h-4 mr-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
                   Sign Out
