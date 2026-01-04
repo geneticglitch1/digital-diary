@@ -108,13 +108,7 @@ export default function EntriesList() {
         <div className="panel-soft p-12 max-w-md mx-auto">
           <div className="text-7xl mb-6">📝</div>
           <h3 className="text-2xl font-bold text-[#1a4d3e] mb-3">No entries yet</h3>
-          <p className="text-[#1a4d3e]/70 mb-6">Start your digital diary journey by creating your first entry.</p>
-          <Link
-            href="/entries/create/freewrite"
-            className="btn-glossy inline-flex items-center rounded-2xl px-6 py-3 text-sm font-medium text-white"
-          >
-             Create Your First Entry
-          </Link>
+          <p className="text-[#1a4d3e]/70">Start your digital diary journey by creating your first entry.</p>
         </div>
       </div>
     )

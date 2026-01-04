@@ -1,3 +1,13 @@
+// Additional day activity questions (used alongside mood-based prompts)
+export function getDayActivityQuestions(): string[] {
+  return [
+    "Did you attend all your calendar events today? How busy did your day feel?",
+    "How active were you today? What physical activities did you engage in?",
+    "Who did you meet or interact with today? What's your relationship with them?",
+    "What places did you travel to today? How much time did you spend indoors versus outdoors?"
+  ]
+}
+
 // Mood-based guided prompts system
 export const moodBasedPrompts = {
   "😢": { // Extremely Sad
@@ -5,7 +15,6 @@ export const moodBasedPrompts = {
     description: "Let's work through these challenging feelings together",
     prompts: [
       "What's weighing heavily on your heart today?",
-      "What emotions are you experiencing right now?",
       "What would help you feel even a little bit better?",
       "Who or what brings you comfort during difficult times?",
       "What small step can you take toward healing?"
@@ -39,8 +48,6 @@ export const moodBasedPrompts = {
     prompts: [
       "What brought you joy today?",
       "What are you most grateful for right now?",
-      "How can you share this positive energy with others?",
-      "What made you smile or laugh recently?",
       "What would you like to remember about this feeling?"
     ]
   },
@@ -51,7 +58,6 @@ export const moodBasedPrompts = {
       "What's making you feel absolutely amazing?",
       "How can you bottle this feeling for later?",
       "What positive changes are happening in your life?",
-      "How can you spread this joy to others?",
       "What does this happiness teach you about yourself?"
     ]
   }
