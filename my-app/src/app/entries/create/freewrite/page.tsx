@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import MediaUpload from "@/components/MediaUpload"
 
 export default function CreateFreewriteEntry() {
   const [content, setContent] = useState("")
   const [visibility, setVisibility] = useState("PRIVATE")
   const [qualityEmoji, setQualityEmoji] = useState("")
+  const [mediaUrls, setMediaUrls] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [currentDateTime, setCurrentDateTime] = useState("")
@@ -51,6 +53,7 @@ export default function CreateFreewriteEntry() {
           content,
           visibility,
           qualityEmoji: qualityEmoji || null,
+          mediaUrls,
         }),
       })
 
@@ -150,6 +153,11 @@ export default function CreateFreewriteEntry() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Media Upload */}
+              <div>
+                <MediaUpload mediaUrls={mediaUrls} onMediaChange={setMediaUrls} />
               </div>
 
               {/* Visibility */}

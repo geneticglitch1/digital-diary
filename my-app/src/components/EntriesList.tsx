@@ -10,6 +10,7 @@ interface Entry {
   content: string | null
   visibility: "PRIVATE" | "PUBLIC" | "PROTECTED"
   qualityEmoji: string | null
+  mediaUrls: string[]
   createdAt: string
   updatedAt: string
 }
@@ -148,6 +149,35 @@ export default function EntriesList() {
             <p className="text-[#1a4d3e]/80 text-sm mb-4 line-clamp-3">
               {entry.content || "No content"}
             </p>
+            
+            {/* Media preview */}
+            {entry.mediaUrls && entry.mediaUrls.length > 0 && (
+              <div className="flex gap-2 mb-4">
+                {entry.mediaUrls.slice(0, 3).map((url, index) => {
+                  const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(url)
+                  return isImage ? (
+                    <img
+                      key={index}
+                      src={url}
+                      alt={`Preview ${index + 1}`}
+                      className="w-16 h-16 object-cover rounded-lg border border-[#1a4d3e]/20"
+                    />
+                  ) : (
+                    <div
+                      key={index}
+                      className="w-16 h-16 bg-[#1a4d3e]/10 rounded-lg border border-[#1a4d3e]/20 flex items-center justify-center"
+                    >
+                      <span className="text-xs">🎥</span>
+                    </div>
+                  )
+                })}
+                {entry.mediaUrls.length > 3 && (
+                  <div className="w-16 h-16 bg-[#1a4d3e]/10 rounded-lg border border-[#1a4d3e]/20 flex items-center justify-center">
+                    <span className="text-xs text-[#1a4d3e]/70">+{entry.mediaUrls.length - 3}</span>
+                  </div>
+                )}
+              </div>
+            )}
             
             <div className="flex items-center text-xs text-[#1a4d3e]/60">
               <span>Created: {formatDate(entry.createdAt)}</span>

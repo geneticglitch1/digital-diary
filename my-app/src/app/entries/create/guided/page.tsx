@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { moodBasedPrompts, emojiOptions, getDayActivityQuestions } from "@/lib/guidedPrompts"
+import MediaUpload from "@/components/MediaUpload"
 
 export default function CreateGuidedEntry() {
   const [currentStep, setCurrentStep] = useState<'mood' | 'prompts' | 'confirm-followup' | 'followup'>('mood')
@@ -13,6 +14,7 @@ export default function CreateGuidedEntry() {
   const [followUpResponses, setFollowUpResponses] = useState<Record<string, string>>({})
   const [isGeneratingFollowUp, setIsGeneratingFollowUp] = useState(false)
   const [visibility, setVisibility] = useState("PRIVATE")
+  const [mediaUrls, setMediaUrls] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [currentDateTime, setCurrentDateTime] = useState("")
@@ -157,6 +159,7 @@ export default function CreateGuidedEntry() {
           content: structuredContent,
           visibility,
           qualityEmoji: selectedMood,
+          mediaUrls,
         }),
       })
 
@@ -304,6 +307,11 @@ export default function CreateGuidedEntry() {
                       />
                     </div>
                   ))}
+
+                  {/* Media Upload */}
+                  <div>
+                    <MediaUpload mediaUrls={mediaUrls} onMediaChange={setMediaUrls} />
+                  </div>
 
                   {/* Visibility */}
                   <div>

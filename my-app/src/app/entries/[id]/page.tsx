@@ -10,6 +10,7 @@ interface Entry {
   content: string | null
   visibility: "PRIVATE" | "PUBLIC" | "PROTECTED"
   qualityEmoji: string | null
+  mediaUrls: string[]
   createdAt: string
   updatedAt: string
 }
@@ -181,6 +182,44 @@ export default function ViewEntry() {
                 </div>
               )}
 
+              {/* Media */}
+              {entry.mediaUrls && entry.mediaUrls.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Media</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    {entry.mediaUrls.map((url, index) => {
+                      const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(url)
+                      const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(url)
+                      
+                      return (
+                        <div key={index} className="relative group">
+                          {isImage ? (
+                            <img
+                              src={url}
+                              alt={`Media ${index + 1}`}
+                              className="w-full h-48 object-cover rounded-lg border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity"
+                              onClick={() => window.open(url, '_blank')}
+                            />
+                          ) : isVideo ? (
+                            <video
+                              src={url}
+                              className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                              controls
+                              preload="metadata"
+                            >
+                              Your browser does not support the video tag.
+                            </video>
+                          ) : (
+                            <div className="w-full h-48 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
+                              <span className="text-gray-400 text-sm">Media</span>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
