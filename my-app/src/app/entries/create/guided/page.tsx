@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { moodBasedPrompts, emojiOptions, getDayActivityQuestions } from "@/lib/guidedPrompts"
 import MediaUpload from "@/components/MediaUpload"
+import { WeatherData } from "@/lib/weather"
 
 export default function CreateGuidedEntry() {
   const [currentStep, setCurrentStep] = useState<'mood' | 'prompts' | 'confirm-followup' | 'followup'>('mood')
@@ -18,6 +19,9 @@ export default function CreateGuidedEntry() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [currentDateTime, setCurrentDateTime] = useState("")
+  const [locationPermission, setLocationPermission] = useState<'not-asked' | 'requesting' | 'granted' | 'denied'>('not-asked')
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null)
+  const [isRequestingLocation, setIsRequestingLocation] = useState(false)
   const router = useRouter()
 
   // Update current date/time every second
@@ -61,6 +65,57 @@ export default function CreateGuidedEntry() {
     }))
   }
 
+  const requestLocationAndWeather = async (): Promise<WeatherData | null> => {
+    if (!navigator.geolocation) {
+      console.error("Geolocation is not supported by this browser")
+      return null
+    }
+
+    setIsRequestingLocation(true)
+    setLocationPermission('requesting')
+
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          setLocationPermission('granted')
+          try {
+            const response = await fetch(
+              `/api/weather?lat=${position.coords.latitude}&lng=${position.coords.longitude}`
+            )
+            
+            if (!response.ok) {
+              throw new Error("Failed to fetch weather")
+            }
+            
+            const data = await response.json()
+            const weather = data.weather as WeatherData
+            
+            if (weather) {
+              setWeatherData(weather)
+            }
+            setIsRequestingLocation(false)
+            resolve(weather)
+          } catch (error) {
+            console.error("Error fetching weather:", error)
+            setIsRequestingLocation(false)
+            resolve(null)
+          }
+        },
+        (error) => {
+          console.error("Error getting location:", error)
+          setLocationPermission('denied')
+          setIsRequestingLocation(false)
+          resolve(null)
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 10000,
+          maximumAge: 300000, // 5 minutes
+        }
+      )
+    })
+  }
+
   const generateFollowUpQuestions = async () => {
     if (!selectedMood) return
 
@@ -73,6 +128,12 @@ export default function CreateGuidedEntry() {
     setIsGeneratingFollowUp(true)
     setError("")
 
+    // Request location and weather if not already requested
+    let weather: WeatherData | null = weatherData
+    if (locationPermission === 'not-asked') {
+      weather = await requestLocationAndWeather()
+    }
+
     try {
       const response = await fetch("/api/guided/followup-questions", {
         method: "POST",
@@ -83,6 +144,7 @@ export default function CreateGuidedEntry() {
           prompts: allPrompts,
           responses: allResponses,
           mood: selectedMood,
+          weather: weather,
         }),
       })
 
@@ -356,9 +418,53 @@ export default function CreateGuidedEntry() {
                       <h3 className="text-lg font-semibold text-purple-900 mb-2">
                         Would you like AI-generated follow-up questions?
                       </h3>
-                      <p className="text-sm text-purple-700 mb-6">
+                      <p className="text-sm text-purple-700 mb-4">
                         Our AI can analyze your responses and generate personalized questions to help you explore your thoughts more deeply.
                       </p>
+                      
+                      {/* Location Permission Request */}
+                      {locationPermission === 'not-asked' && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                          <div className="flex items-start space-x-3">
+                            <span className="text-2xl">📍</span>
+                            <div className="text-left flex-1">
+                              <h4 className="font-medium text-blue-900 mb-1">
+                                Allow Digital Diary to have access to your location?
+                              </h4>
+                              <p className="text-xs text-blue-700">
+                                We'll use your location to fetch weather data and generate questions about how your mood correlates with the weather in your city.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {locationPermission === 'requesting' && (
+                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                          <p className="text-sm text-yellow-800">
+                            Requesting location access...
+                          </p>
+                        </div>
+                      )}
+                      
+                      {locationPermission === 'granted' && weatherData && (
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-xl">✅</span>
+                            <p className="text-sm text-green-800">
+                              Weather in {weatherData.city}, {weatherData.state}: {weatherData.temperature}°F, {weatherData.condition}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {locationPermission === 'denied' && (
+                        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                          <p className="text-sm text-gray-700">
+                            Location access denied. Questions will be generated without weather data.
+                          </p>
+                        </div>
+                      )}
                       
                       <div className="flex justify-center gap-4">
                         <button
@@ -372,10 +478,10 @@ export default function CreateGuidedEntry() {
                         <button
                           type="button"
                           onClick={() => handleConfirmFollowup(true)}
-                          disabled={isGeneratingFollowUp || isLoading}
+                          disabled={isGeneratingFollowUp || isLoading || isRequestingLocation}
                           className="px-6 py-3 border border-transparent rounded-lg text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                         >
-                          {isGeneratingFollowUp ? "Generating..." : "Yes, generate questions"}
+                          {isGeneratingFollowUp ? "Generating..." : isRequestingLocation ? "Requesting location..." : "Yes, generate questions"}
                         </button>
                       </div>
                     </div>

@@ -6,6 +6,7 @@ import EntriesList from "@/components/EntriesList"
 import CreateEntryDropdown from "@/components/CreateEntryDropdown"
 import ProfileDropdown from "@/components/ProfileDropdown"
 import CalendarEvents from "@/components/CalendarEvents"
+import WeatherDisplay from "@/components/WeatherDisplay"
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -96,6 +97,7 @@ export default function Home() {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
+              <WeatherDisplay />
               <ProfileDropdown />
             </div>
           </div>
