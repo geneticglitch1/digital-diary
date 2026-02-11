@@ -25,18 +25,24 @@ export async function POST(request: NextRequest) {
     })
   } catch (error: any) {
     console.error("Error syncing calendar events:", error)
-    
-    if (error.message?.includes("not connected") || error.message?.includes("tokens missing")) {
-      return NextResponse.json(
-        { error: "Google Calendar not connected. Please connect your Google account." },
-        { status: 401 }
-      )
+
+    const msg = (error?.message || "").toString().toLowerCase()
+    if (msg.includes("not connected") || msg.includes("tokens missing") || msg.includes("failed to refresh")) {
+      const payload: any = { error: "Google Calendar not connected. Please connect your Google account." }
+      if (process.env.NODE_ENV !== "production") {
+        payload.detail = error?.message || String(error)
+        payload.stack = error?.stack
+      }
+      return NextResponse.json(payload, { status: 401 })
     }
 
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+    const payload: any = { error: "Internal server error" }
+    if (process.env.NODE_ENV !== "production") {
+      payload.detail = error?.message || String(error)
+      payload.stack = error?.stack
+    }
+
+    return NextResponse.json(payload, { status: 500 })
   }
 }
 

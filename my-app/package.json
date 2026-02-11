@@ -10,6 +10,7 @@
     "prisma:migrate": "prisma migrate dev"
   },
   "dependencies": {
+    "nodemailer": "^6.9.4",
     "@anthropic-ai/sdk": "^0.32.1",
     "@auth/prisma-adapter": "^2.11.0",
     "@prisma/client": "^6.17.1",

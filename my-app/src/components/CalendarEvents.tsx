@@ -25,7 +25,7 @@ interface CalendarEvent {
 export default function CalendarEvents() {
   const { data: session } = useSession()
   const [events, setEvents] = useState<CalendarEvent[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [syncing, setSyncing] = useState(false)
   const [connected, setConnected] = useState(false)
   const [error, setError] = useState("")
@@ -50,12 +50,16 @@ export default function CalendarEvents() {
     try {
       const response = await fetch("/api/calendar/events")
       if (!response.ok) {
+        const data = await response.json().catch(() => ({} as any))
         if (response.status === 401) {
           setConnected(false)
-          setError("Google Calendar not connected")
+          setError(data?.error || "Google Calendar not connected")
           return
         }
-        throw new Error("Failed to fetch events")
+        const detail = data?.error || data?.detail || `Failed to fetch events (status ${response.status})`
+        console.error("Failed to fetch events:", data)
+        setError(detail)
+        return
       }
       const data = await response.json()
       setEvents(data.events || [])
@@ -84,12 +88,16 @@ export default function CalendarEvents() {
       })
 
       if (!response.ok) {
+        const data = await response.json().catch(() => ({} as any))
         if (response.status === 401) {
           setConnected(false)
-          setError("Google Calendar not connected")
+          setError(data?.error || "Google Calendar not connected")
           return
         }
-        throw new Error("Failed to sync events")
+        const detail = data?.error || data?.detail || `Failed to sync events (status ${response.status})`
+        console.error("Failed to sync events:", data)
+        setError(detail)
+        return
       }
 
       const data = await response.json()
@@ -105,19 +113,13 @@ export default function CalendarEvents() {
   useEffect(() => {
     if (session) {
       checkConnection()
-      fetchEvents()
+      // Do not auto-fetch events on mount. User must press Sync to load events.
     }
   }, [session])
 
   useEffect(() => {
-    if (connected && session) {
-      // Set up periodic sync every 5 minutes
-      const syncInterval = setInterval(() => {
-        syncEvents()
-      }, 5 * 60 * 1000) // 5 minutes
-
-      return () => clearInterval(syncInterval)
-    }
+    // Auto-sync disabled: users must press the Sync button to sync events
+    return
   }, [connected, session, syncEvents])
 
   const connectGoogle = async () => {
@@ -187,7 +189,7 @@ export default function CalendarEvents() {
           disabled={syncing}
           className="btn-glossy-green rounded-2xl px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
-          {syncing ? "Syncing..." : "🔄 Sync"}
+          {syncing ? "Syncing..." : "Sync"}
         </button>
       </div>
 

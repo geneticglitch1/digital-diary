@@ -157,7 +157,7 @@ Manually sync calendar events.
 
 3. **Sync Events:**
    - Events sync automatically every 5 minutes
-   - Click the "🔄 Sync" button for immediate updates
+   - Click the "Sync" button for immediate updates
 
 ## Security Notes
 
