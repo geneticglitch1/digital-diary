@@ -158,7 +158,7 @@ export default function CalendarEvents() {
   if (!connected) {
     return (
       <div className="panel-soft p-8 text-center">
-        <div className="text-6xl mb-4">📅</div>
+        <div className="text-6xl mb-4"></div>
         <h3 className="text-2xl font-bold text-[#1a4d3e] mb-3">Connect Google Calendar</h3>
         <p className="text-[#1a4d3e]/70 mb-6">
           Connect your Google Calendar to view and sync your events
@@ -178,7 +178,7 @@ export default function CalendarEvents() {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-2xl font-bold bg-gradient-to-r from-[#1a4d3e] to-[#4A90E2] bg-clip-text text-transparent">
-            📅 Calendar Events
+            Calendar Events
           </h3>
           <p className="text-sm text-[#1a4d3e]/70 mt-1">
             Your upcoming events from Google Calendar
@@ -210,7 +210,13 @@ export default function CalendarEvents() {
         </div>
       ) : events.length === 0 ? (
         <div className="panel-soft p-8 text-center">
-          <div className="text-5xl mb-4">📆</div>
+          <div className="mb-4">
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/960px-Google_Calendar_icon_%282020%29.svg.png" 
+              alt="Calendar" 
+              className="w-20 h-20 mx-auto"
+            />
+          </div>
           <h4 className="text-lg font-medium text-[#1a4d3e] mb-2">No upcoming events</h4>
           <p className="text-[#1a4d3e]/60">
             You don't have any events scheduled in the next 30 days.
