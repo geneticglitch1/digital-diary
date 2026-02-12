@@ -40,7 +40,7 @@ export default function CreateEntryDropdown() {
           />
           
           {/* Dropdown menu */}
-          <div className="absolute right-0 z-20 mt-3 w-72 origin-top-right glass-strong rounded-3xl shadow-2xl overflow-hidden">
+          <div className="absolute right-0 z-20 mt-3 w-72 origin-top-right bg-white rounded-3xl shadow-2xl overflow-hidden">
             <div className="py-2">
               <div className="px-5 py-3 text-xs font-semibold text-[#1a4d3e]/70 uppercase tracking-wider border-b border-white/20">
                 Choose Entry Type
@@ -48,7 +48,7 @@ export default function CreateEntryDropdown() {
               
               <Link
                 href="/entries/create/freewrite"
-                className="flex items-center px-5 py-4 text-sm text-[#1a4d3e] hover:bg-white/30 transition-all group"
+                className="flex items-center px-5 py-4 text-sm text-[#1a4d3e] hover:bg-white/100 transition-all group"
                 onClick={() => setIsOpen(false)}
               >
                 <div className="flex-shrink-0 mr-4">
