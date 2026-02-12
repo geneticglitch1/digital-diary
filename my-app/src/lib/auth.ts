@@ -5,8 +5,48 @@ import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
+const baseAdapter = PrismaAdapter(prisma) as any
+
+const normalizeUserData = (data: any) => {
+  const email = typeof data?.email === "string" ? data.email : ""
+  const username = typeof data?.username === "string" && data.username
+    ? data.username
+    : email.split("@")[0]
+  const name = typeof data?.name === "string" ? data.name.trim() : ""
+  const nameParts = name ? name.split(/\s+/) : []
+  const firstName = nameParts.length ? nameParts[0] : null
+  const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : null
+  const profilePicture = typeof data?.image === "string" ? data.image : null
+  const { name: _name, image: _image, ...rest } = data ?? {}
+  return {
+    ...rest,
+    firstName,
+    lastName,
+    profilePicture,
+    username,
+  }
+}
+
+const sanitizeAccountData = (data: any) => {
+  const { refresh_token_expires_in: _refreshTokenExpiresIn, ...rest } = data ?? {}
+  return rest
+}
+
+const adapter = {
+  ...baseAdapter,
+  async createUser(data: any) {
+    return baseAdapter.createUser(normalizeUserData(data))
+  },
+  async updateUser(data: any) {
+    return baseAdapter.updateUser(normalizeUserData(data))
+  },
+  async linkAccount(data: any) {
+    return baseAdapter.linkAccount(sanitizeAccountData(data))
+  },
+}
+
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as any,
+  adapter,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,

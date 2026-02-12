@@ -8,9 +8,10 @@ const prisma = new PrismaClient()
 // GET /api/entries/[id] - Get a specific entry
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.id) {
@@ -19,7 +20,7 @@ export async function GET(
 
     const entry = await prisma.entry.findFirst({
       where: {
-        id: params.id,
+        id,
         userId: session.user.id
       },
       include: {
@@ -44,9 +45,10 @@ export async function GET(
 // PUT /api/entries/[id] - Update an entry
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.id) {
@@ -57,7 +59,7 @@ export async function PUT(
 
     const existingEntry = await prisma.entry.findFirst({
       where: {
-        id: params.id,
+        id,
         userId: session.user.id
       }
     })
@@ -67,7 +69,7 @@ export async function PUT(
     }
 
     const entry = await prisma.entry.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         content,
         visibility,
@@ -93,9 +95,10 @@ export async function PUT(
 // DELETE /api/entries/[id] - Delete an entry
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.id) {
@@ -104,7 +107,7 @@ export async function DELETE(
 
     const existingEntry = await prisma.entry.findFirst({
       where: {
-        id: params.id,
+        id,
         userId: session.user.id
       }
     })
@@ -114,7 +117,7 @@ export async function DELETE(
     }
 
     await prisma.entry.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     // Update user entry counts

@@ -2,10 +2,6 @@ import { z } from "zod"
 
 /** Reusable constraints (OWASP: length limits, type safety) */
 const MAX_EMAIL = 255
-const USERNAME_MIN = 3
-const USERNAME_MAX = 50
-const PASSWORD_MIN = 8
-const PASSWORD_MAX = 128
 const CONTENT_MAX = 100_000
 const DISPLAY_NAME_MAX = 100
 const URL_MAX = 2048
@@ -14,8 +10,6 @@ const PROMPT_ITEM_MAX = 2000
 const PROMPT_ITEMS_MAX = 50
 const CUID_LENGTH = 25
 
-const usernameRegex = /^[a-zA-Z0-9_-]+$/
-
 export const signupSchema = z
   .object({
     email: z
@@ -23,15 +17,6 @@ export const signupSchema = z
       .min(1, "Email is required")
       .max(MAX_EMAIL, "Email too long")
       .email("Invalid email"),
-    username: z
-      .string()
-      .min(USERNAME_MIN, `Username must be at least ${USERNAME_MIN} characters`)
-      .max(USERNAME_MAX, `Username must be at most ${USERNAME_MAX} characters`)
-      .regex(usernameRegex, "Username may only contain letters, numbers, underscore and hyphen"),
-    password: z
-      .string()
-      .min(PASSWORD_MIN, `Password must be at least ${PASSWORD_MIN} characters`)
-      .max(PASSWORD_MAX, `Password must be at most ${PASSWORD_MAX} characters`),
   })
   .strict()
 
@@ -90,37 +75,10 @@ export const calendarEventsQuerySchema = z.object({
   maxResults: z.coerce.number().int().min(1).max(250).default(50),
 })
 
-export const forgotPasswordSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .max(MAX_EMAIL, "Email too long")
-    .email("Invalid email"),
-})
-
-export const resetPasswordSchema = z.object({
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .max(MAX_EMAIL, "Email too long")
-    .email("Invalid email"),
-  token: z.string().min(1, "Token is required"),
-  password: z
-    .string()
-    .min(PASSWORD_MIN, `Password must be at least ${PASSWORD_MIN} characters`)
-    .max(PASSWORD_MAX, `Password must be at most ${PASSWORD_MAX} characters`),
-})
-
 export const profileUpdateSchema = z
   .object({
     firstName: z.string().max(DISPLAY_NAME_MAX).nullable().optional(),
     lastName: z.string().max(DISPLAY_NAME_MAX).nullable().optional(),
-    username: z
-      .string()
-      .min(USERNAME_MIN)
-      .max(USERNAME_MAX)
-      .regex(usernameRegex)
-      .optional(),
     profilePicture: z.string().url().max(URL_MAX).nullable().optional(),
   })
   .strict()
