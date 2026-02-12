@@ -14,12 +14,17 @@ export default function SignIn() {
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative z-10">
       <div className="max-w-md w-full space-y-8">
-        <div className="panel-soft p-8 text-center">
-          <div className="text-6xl mb-4">🔐</div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-[#1a4d3e] to-[#4A90E2] bg-clip-text text-transparent">
-            Sign in to your account
-          </h2>
-        </div>
+        <div className="panel-soft p-8 flex flex-col items-center text-center gap-4">
+  <img
+    src="https://png.pngtree.com/png-vector/20230922/ourmid/pngtree-diary-book-illustration-png-image_10146252.png"
+    alt="Diary"
+    className="w-42 h-auto"
+  />
+
+  <h2 className="text-3xl font-bold bg-gradient-to-r from-[#1a4d3e] to-[#4A90E2] bg-clip-text text-transparent">
+    Sign in to your account
+  </h2>
+</div>
         <div className="panel-soft p-8 space-y-6">
           <button
             onClick={handleGoogleSignIn}
