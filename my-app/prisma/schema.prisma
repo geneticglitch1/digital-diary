@@ -18,7 +18,6 @@ model User {
   username              String   @unique
   firstName             String?
   lastName              String?
-  password              String
   email                 String   @unique
   emailVerified         DateTime?
   profilePicture        String?  // URL to profile picture

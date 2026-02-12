@@ -57,31 +57,13 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { firstName, lastName, username, profilePicture } = await request.json()
-
-    // Check if username is being changed and if it's already taken
-    if (username) {
-      const existingUser = await prisma.user.findFirst({
-        where: {
-          username: username,
-          id: { not: session.user.id }
-        }
-      })
-
-      if (existingUser) {
-        return NextResponse.json(
-          { error: "Username is already taken" },
-          { status: 400 }
-        )
-      }
-    }
+    const { firstName, lastName, profilePicture } = await request.json()
 
     const updatedUser = await prisma.user.update({
       where: { id: session.user.id },
       data: {
         firstName: firstName || null,
         lastName: lastName || null,
-        username: username || undefined,
         profilePicture: profilePicture || null,
       },
       select: {
