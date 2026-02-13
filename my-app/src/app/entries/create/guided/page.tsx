@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { moodBasedPrompts, emojiOptions, getDayActivityQuestions } from "@/lib/guidedPrompts"
+import GestureEmoji from "@/components/GestureEmoji";
 
 export default function CreateGuidedEntry() {
   const [currentStep, setCurrentStep] = useState<'mood' | 'prompts' | 'confirm-followup' | 'followup'>('mood')
@@ -257,6 +258,13 @@ export default function CreateGuidedEntry() {
                         <span className="text-sm text-gray-700 font-medium">{option.label}</span>
                       </button>
                     ))}
+                  </div>
+                  {/* Hand Tracking */}
+                  <div className="border-t border-gray-200 pt-6">
+                    <p className="text-center text-sm text-gray-500 mb-3">
+                        Or you can Indicate with a hand gesture: thumbs up, sideways, or down
+                    </p>
+                    <GestureEmoji onGestureSelect={handleMoodSelection} />
                   </div>
                 </div>
               )}
