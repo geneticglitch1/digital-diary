@@ -13,7 +13,7 @@
             "version": "latest"
         }
     },
-    "postCreateCommand": "cd /workspaces/hues",
+    "postCreateCommand": "cd /workspaces/digdia",
     "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
     "remoteUser": "vscode"
 }
