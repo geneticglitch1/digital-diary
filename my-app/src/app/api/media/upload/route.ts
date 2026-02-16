@@ -4,11 +4,12 @@ import { authOptions } from "@/lib/auth"
 import { writeFile, mkdir } from "fs/promises"
 import { join } from "path"
 import { existsSync } from "fs"
+import sharp from "sharp"
 
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -24,10 +25,10 @@ export async function POST(request: NextRequest) {
     const allowedImageTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
     const allowedVideoTypes = ["video/mp4", "video/webm", "video/ogg", "video/quicktime"]
     const allowedTypes = [...allowedImageTypes, ...allowedVideoTypes]
-    
+
     if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ 
-        error: "Invalid file type. Please upload an image (JPEG, PNG, GIF, WebP) or video (MP4, WebM, OGG, MOV)." 
+      return NextResponse.json({
+        error: "Invalid file type. Please upload an image (JPEG, PNG, GIF, WebP) or video (MP4, WebM, OGG, MOV)."
       }, { status: 400 })
     }
 
@@ -35,8 +36,8 @@ export async function POST(request: NextRequest) {
     const isVideo = allowedVideoTypes.includes(file.type)
     const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024 // 50MB for videos, 10MB for images
     if (file.size > maxSize) {
-      return NextResponse.json({ 
-        error: `File too large. Please upload a file smaller than ${isVideo ? '50MB' : '10MB'}.` 
+      return NextResponse.json({
+        error: `File too large. Please upload a file smaller than ${isVideo ? '50MB' : '10MB'}.`
       }, { status: 400 })
     }
 
@@ -48,13 +49,13 @@ export async function POST(request: NextRequest) {
 
     // Sanitize file extension - only allow safe extensions
     const fileExtension = file.name.split('.').pop()?.toLowerCase()
-    const allowedExtensions = isVideo 
+    const allowedExtensions = isVideo
       ? ["mp4", "webm", "ogg", "mov"]
       : ["jpg", "jpeg", "png", "gif", "webp"]
-    
+
     if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
-      return NextResponse.json({ 
-        error: `Invalid file extension. Please upload a ${isVideo ? 'video' : 'image'} file.` 
+      return NextResponse.json({
+        error: `Invalid file extension. Please upload a ${isVideo ? 'video' : 'image'} file.`
       }, { status: 400 })
     }
 
@@ -62,9 +63,25 @@ export async function POST(request: NextRequest) {
     const fileName = `${session.user.id}-${Date.now()}.${fileExtension}`
     const filePath = join(uploadsDir, fileName)
 
-    // Convert file to buffer and save to public folder
+    // Convert file to buffer
     const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
+    let buffer = Buffer.from(bytes)
+
+    // Strip EXIF data (and auto-orient) if it's an image
+    if (!isVideo) {
+      try {
+        // Check if potentially animated (GIF, WebP)
+        const isAnimated = ["gif", "webp"].includes(fileExtension || "")
+
+        buffer = await sharp(buffer, { animated: isAnimated })
+          .rotate() // Auto-orient based on EXIF before stripping
+          .toBuffer() // Default behavior strips metadata
+      } catch (error) {
+        console.error("Error stripping EXIF data:", error)
+        // Continue with original buffer if processing fails
+      }
+    }
+
     await writeFile(filePath, buffer)
 
     // Generate public URL (files in public folder are served at root)

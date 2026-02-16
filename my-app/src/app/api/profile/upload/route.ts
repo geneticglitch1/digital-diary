@@ -5,13 +5,14 @@ import { PrismaClient } from "@prisma/client"
 import { writeFile, mkdir, unlink } from "fs/promises"
 import { join } from "path"
 import { existsSync } from "fs"
+import sharp from "sharp"
 
 const prisma = new PrismaClient()
 
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    
+
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -26,16 +27,16 @@ export async function POST(request: NextRequest) {
     // Validate file type
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
     if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ 
-        error: "Invalid file type. Please upload a JPEG, PNG, GIF, or WebP image." 
+      return NextResponse.json({
+        error: "Invalid file type. Please upload a JPEG, PNG, GIF, or WebP image."
       }, { status: 400 })
     }
 
     // Validate file size (max 5MB)
     const maxSize = 5 * 1024 * 1024 // 5MB
     if (file.size > maxSize) {
-      return NextResponse.json({ 
-        error: "File too large. Please upload an image smaller than 5MB." 
+      return NextResponse.json({
+        error: "File too large. Please upload an image smaller than 5MB."
       }, { status: 400 })
     }
 
@@ -56,8 +57,8 @@ export async function POST(request: NextRequest) {
     const fileExtension = file.name.split('.').pop()?.toLowerCase()
     const allowedExtensions = ["jpg", "jpeg", "png", "gif", "webp"]
     if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
-      return NextResponse.json({ 
-        error: "Invalid file extension. Please upload a JPEG, PNG, GIF, or WebP image." 
+      return NextResponse.json({
+        error: "Invalid file extension. Please upload a JPEG, PNG, GIF, or WebP image."
       }, { status: 400 })
     }
 
@@ -65,9 +66,23 @@ export async function POST(request: NextRequest) {
     const fileName = `${session.user.id}-${Date.now()}.${fileExtension}`
     const filePath = join(uploadsDir, fileName)
 
-    // Convert file to buffer and save to public folder
+    // Convert file to buffer
     const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
+    let buffer = Buffer.from(bytes)
+
+    // Strip EXIF data (and auto-orient)
+    try {
+      // Check if potentially animated (GIF, WebP)
+      const isAnimated = ["gif", "webp"].includes(fileExtension || "")
+
+      buffer = await sharp(buffer, { animated: isAnimated })
+        .rotate() // Auto-orient based on EXIF before stripping
+        .toBuffer() // Default behavior strips metadata
+    } catch (error) {
+      console.error("Error stripping EXIF data:", error)
+      // Continue with original buffer if processing fails
+    }
+
     await writeFile(filePath, buffer)
 
     // Generate public URL (files in public folder are served at root)
